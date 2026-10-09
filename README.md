@@ -10,10 +10,12 @@ FTF), including their harmonics and shaft-speed sidebands.
 Get the latest installer from the [Releases](../../releases) page and run
 `BearingAnalyser-Setup-<version>.exe`.
 
-- **Just me** installs to `%LOCALAPPDATA%\Programs\Bearing Analyser` and needs no
-  administrator rights.
-- **Anyone who uses this PC** installs to Program Files and asks for an administrator
-  password.
+- **Just me** (the default) installs to
+  `C:\Users\<you>\AppData\Local\Programs\Bearing Analyser` and needs no administrator
+  rights.
+- **Anyone who uses this PC** installs to `C:\Program Files\Bearing Analyser` and asks
+  for an administrator password.
+- You can choose a different folder in the installer.
 - Installing over an earlier version keeps your settings, bearing libraries and licence.
 - Uninstall from **Settings > Apps**. Settings, libraries and the licence are kept unless
   you choose to remove them.
@@ -164,7 +166,11 @@ window. Licence questions: licences@monkeyco.net.
 
 ## Settings and data
 
-Settings, bearing libraries and the licence are stored in
-`%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
+Settings (`settings.json`), bearing libraries (`libraries`) and the licence (`licence`) are
+stored in the installation folder, for example
+`%LOCALAPPDATA%\Programs\Bearing Analyser`. An all-users install under Program Files
+cannot be written by ordinary accounts, so there they are stored in
+`%LOCALAPPDATA%\MonkeyCo\Bearing Analyser` instead. Data from earlier versions, which used
+that folder, is copied across the first time the new version runs.
 
 Published by MonkeyCo.
