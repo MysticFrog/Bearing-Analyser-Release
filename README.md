@@ -5,11 +5,21 @@ from vibration or acoustic recordings. It shows a live FFT spectrum, finds the p
 matches them against the defect frequencies of the selected bearing (BPFO, BPFI, BSF and
 FTF), including their harmonics and shaft-speed sidebands.
 
-## Download
+## Download and install
 
 Get the latest installer from the [Releases](../../releases) page and run
-`BearingAnalyser-Setup-<version>.exe`. The installer does not need administrator rights;
-it installs to `%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
+`BearingAnalyser-Setup-<version>.exe`.
+
+- **Just me** installs to `%LOCALAPPDATA%\Programs\Bearing Analyser` and needs no
+  administrator rights.
+- **Anyone who uses this PC** installs to Program Files and asks for an administrator
+  password.
+- Installing over an earlier version keeps your settings, bearing libraries and licence.
+- Uninstall from **Settings > Apps**. Settings, libraries and the licence are kept unless
+  you choose to remove them.
+
+For unattended installs: `/S` (silent), `/allusers`, `/D="C:\Folder"`, `/nodesktop`, and
+`/uninstall`.
 
 ## Features
 
@@ -28,10 +38,15 @@ it installs to `%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
 - Amplitude scale that grows with the largest peak, or a fixed reference
 - Automatic shaft RPM detection
 
+**Filters and envelope analysis**
+- High-pass, low-pass, notch and 3-band EQ filters, applied without phase shift
+- Envelope (demodulation) spectrum for finding bearing fault repetition rates
+
 **Bearing fault matching**
-- Searchable bearing libraries; import from CSV, JSON or JSONL and edit models in the app
-- Matched peaks highlighted against fault frequencies, harmonics and sidebands
-- Fault frequency overlays for up to several bearings at once
+- Searchable bearing libraries; import from CSV, JSON or JSONL (see below) and edit models in the app
+- Matched peaks highlighted against fault frequencies, harmonics and sidebands, with an
+  option to hide the match markers
+- Fault frequency overlays for several bearings at once
 - Low, medium and high noise presets
 
 **Noise reduction**
@@ -46,6 +61,89 @@ it installs to `%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
 - Dark, light and system themes
 - Interface in English, Chinese, Japanese, Korean, Russian, French, Spanish, Italian and German
 
+## Importing bearings
+
+Open the **Library Manager** and choose **Import CSV...** or **Import JSON/JSONL...**. Each
+file becomes a new library named after the file. Example files are installed in
+`examples\bearing-import` in the installation folder, and are also in this repository's
+[examples/bearing-import](examples/bearing-import) folder. The bearing values in them are
+illustrative only; use the geometry and fault frequencies published by the bearing maker.
+
+Each bearing needs its geometry, from which the fault frequencies are calculated. Fault
+frequencies given in the file are used instead of the calculated ones.
+
+| Field | CSV header | JSON key | Unit |
+|---|---|---|---|
+| Name | `Bearing Number` (or `Name`) | `name` | text |
+| Number of rolling elements | `Number of Balls` (or `Rolling Elements`) | `rolling_elements` | whole number |
+| Ball (roller) diameter | `BD mm` (or `Ball Diameter mm`) | `ball_diameter_mm` | mm |
+| Pitch diameter | `Pitch mm` (or `Pitch Diameter mm`) | `pitch_diameter_mm` | mm |
+| Contact angle | `Angle` (or `Contact Angle deg`) | `contact_angle_deg` | degrees |
+| Outer race fault | `BPFO` | `manual_frequencies.bpfo` | see below |
+| Inner race fault | `BPFI` | `manual_frequencies.bpfi` | see below |
+| Ball spin | `BSF` | `manual_frequencies.bsf` | see below |
+| Cage (train) | `FTF` | `manual_frequencies.ftf` | see below |
+| Speed the fault values are for | - | `manual_frequencies_reference_rpm` | RPM |
+
+### CSV
+
+```csv
+Bearing Number,Number of Balls,BD mm,Pitch mm,Angle,BPFO,BPFI,BSF,FTF
+6205 Example,9,7.94,39.04,0,3.585,5.415,2.357,0.398
+6310 Example,8,17.46,77.50,0,3.099,4.901,2.106,0.387
+7205 Example,12,7.14,38.50,40,,,,
+```
+
+- The first line is the header. Headers are matched ignoring case, spaces and punctuation,
+  and the columns may be in any order.
+- Commas separate values and `.` is the decimal point. Fields cannot be quoted, so a name
+  cannot contain a comma.
+- The fault columns are **orders** (multiples of shaft speed), as bearing makers usually
+  publish them. All four must be filled in for any to be used; leave all four empty to have
+  them calculated.
+- Rows missing a name or any geometry value are skipped.
+
+### JSON
+
+An array of bearings:
+
+```json
+[
+  {
+    "name": "6205 Example",
+    "rolling_elements": 9,
+    "ball_diameter_mm": 7.94,
+    "pitch_diameter_mm": 39.04,
+    "contact_angle_deg": 0.0,
+    "manual_frequencies": { "bpfo": 3.585, "bpfi": 5.415, "bsf": 2.357, "ftf": 0.398 },
+    "manual_frequencies_reference_rpm": 60.0
+  },
+  {
+    "name": "7205 Example",
+    "rolling_elements": 12,
+    "ball_diameter_mm": 7.14,
+    "pitch_diameter_mm": 38.5,
+    "contact_angle_deg": 40.0,
+    "manual_frequencies": null
+  }
+]
+```
+
+### JSON Lines
+
+The same objects, one per line, with no surrounding brackets and no commas between lines:
+
+```json
+{"name":"6205 Example","rolling_elements":9,"ball_diameter_mm":7.94,"pitch_diameter_mm":39.04,"contact_angle_deg":0.0,"manual_frequencies":{"bpfo":3.585,"bpfi":5.415,"bsf":2.357,"ftf":0.398},"manual_frequencies_reference_rpm":60.0}
+{"name":"7205 Example","rolling_elements":12,"ball_diameter_mm":7.14,"pitch_diameter_mm":38.5,"contact_angle_deg":40.0,"manual_frequencies":null}
+```
+
+In both JSON formats `manual_frequencies` is optional: leave it out or set it to `null` to
+have the fault frequencies calculated. When given, all four values are required, in **Hz
+at `manual_frequencies_reference_rpm`**, and they scale with the running speed. For
+orders, as in the CSV, set the reference to `60`; for Hz measured or published at a known
+speed, give that speed (for example `1480`).
+
 ## System requirements
 
 - Windows 10 or 11 (64-bit)
@@ -53,15 +151,20 @@ it installs to `%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
 
 ## Licensing
 
-Bearing Analyser runs as a time-limited trial until a licence is installed.
+Bearing Analyser runs as a time-limited trial until a licence is installed. A licence is
+for one PC and is a single purchase, not a subscription: **12 months** or **perpetual**.
 
-1. Open the **About** window. It shows this computer's machine ID and the licence status.
-2. Click **Licence Generation Request...**, fill in your details and send the request.
-3. When you receive your licence files, click **Import Licence File...** in the About
-   window to install them.
+1. Open the **About** window, choose the term under **Buy a licence**, and click
+   **Buy online...** to pay securely through Stripe.
+2. Your licence file (`.blic`) is emailed to you, usually within a few minutes.
+3. Click **Import Licence File...** in the About window to install it.
+
+To request a licence by email instead, use **Licence Generation Request...** in the About
+window. Licence questions: licences@monkeyco.net.
 
 ## Settings and data
 
-Settings and bearing libraries are stored in `%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
+Settings, bearing libraries and the licence are stored in
+`%LOCALAPPDATA%\MonkeyCo\Bearing Analyser`.
 
 Published by MonkeyCo.

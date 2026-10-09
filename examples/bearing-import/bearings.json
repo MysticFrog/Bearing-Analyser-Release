@@ -1,0 +1,28 @@
+[
+  {
+    "name": "6205 Example",
+    "rolling_elements": 9,
+    "ball_diameter_mm": 7.94,
+    "pitch_diameter_mm": 39.04,
+    "contact_angle_deg": 0.0,
+    "manual_frequencies": { "bpfo": 3.585, "bpfi": 5.415, "bsf": 2.357, "ftf": 0.398 },
+    "manual_frequencies_reference_rpm": 60.0
+  },
+  {
+    "name": "6310 Example",
+    "rolling_elements": 8,
+    "ball_diameter_mm": 17.46,
+    "pitch_diameter_mm": 77.5,
+    "contact_angle_deg": 0.0,
+    "manual_frequencies": { "bpfo": 76.44, "bpfi": 120.89, "bsf": 51.95, "ftf": 9.55 },
+    "manual_frequencies_reference_rpm": 1480.0
+  },
+  {
+    "name": "7205 Example",
+    "rolling_elements": 12,
+    "ball_diameter_mm": 7.14,
+    "pitch_diameter_mm": 38.5,
+    "contact_angle_deg": 40.0,
+    "manual_frequencies": null
+  }
+]
