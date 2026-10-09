@@ -157,12 +157,13 @@ Bearing Analyser runs as a time-limited trial until a licence is installed. A li
 for one PC and is a single purchase, not a subscription: **12 months** or **perpetual**.
 
 1. Open the **About** window, choose the term under **Buy a licence**, and click
-   **Buy online...** to pay securely through Stripe.
+   **Buy online...** to pay securely through Stripe. (When the trial has ended, the same
+   options are on the trial screen.)
 2. Your licence file (`.blic`) is emailed to you, usually within a few minutes.
-3. Click **Import Licence File...** in the About window to install it.
+3. Click **Import Licence File...** to install it.
 
-To request a licence by email instead, use **Licence Generation Request...** in the About
-window. Licence questions: licences@monkeyco.net.
+Once a licence is installed, the purchase options are hidden; they return when a 12-month
+licence expires. Licence questions: licences@monkeyco.net.
 
 ## Settings and data
 
